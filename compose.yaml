@@ -11,3 +11,9 @@
       context: .
       dockerfile: Database/Dockerfile
 
+  transcription:
+    image: transcription
+    build:
+      context: .
+      dockerfile: Transcription/Dockerfile
+
