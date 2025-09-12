@@ -1,0 +1,7 @@
+﻿services:
+  telegrambot:
+    image: telegrambot
+    build:
+      context: .
+      dockerfile: TelegramBot/Dockerfile
+
