@@ -5,3 +5,9 @@
       context: .
       dockerfile: TelegramBot/Dockerfile
 
+  database:
+    image: database
+    build:
+      context: .
+      dockerfile: Database/Dockerfile
+
