@@ -17,3 +17,9 @@
       context: .
       dockerfile: Transcription/Dockerfile
 
+  auth:
+    image: auth
+    build:
+      context: .
+      dockerfile: Auth/Dockerfile
+

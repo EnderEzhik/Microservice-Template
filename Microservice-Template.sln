@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Databa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transcription", "Transcription\Transcription.csproj", "{98F1ACB6-C673-48A0-A4F7-ED506F90BC51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "Auth\Auth.csproj", "{EB9CF266-D2A3-40EF-8AE7-000BC95F7002}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,9 @@ Global
 		{98F1ACB6-C673-48A0-A4F7-ED506F90BC51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98F1ACB6-C673-48A0-A4F7-ED506F90BC51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98F1ACB6-C673-48A0-A4F7-ED506F90BC51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB9CF266-D2A3-40EF-8AE7-000BC95F7002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB9CF266-D2A3-40EF-8AE7-000BC95F7002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB9CF266-D2A3-40EF-8AE7-000BC95F7002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB9CF266-D2A3-40EF-8AE7-000BC95F7002}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
