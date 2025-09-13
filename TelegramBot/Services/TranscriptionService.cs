@@ -33,8 +33,6 @@ public class TranscriptionService
         catch (Exception ex)
         {
             logger.Error(ex, "Error processing transcription for url: {Url}", url);
-            // TODO: нужно ли продолжать каскад исключений?
-            // Так как ошибок в этом методе не предполагается, думаю, пусть будет
             throw;
         }
     }
