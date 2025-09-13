@@ -4,7 +4,8 @@
         "TelegramBot": {
             "commandName": "Project",
             "environmentVariables": {
-                "BOT_TOKEN": "YOUR_BOT_TOKEN"
+                "BOT_TOKEN": "YOUR_BOT_TOKEN",
+                "TRANSCRIPTION_SERVICE_URL": "http://localhost:5128"
             }
         }
     }

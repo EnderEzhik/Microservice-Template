@@ -74,6 +74,14 @@ class Program
 
     private static void ConfigureServices(IServiceCollection services)
     {
+        services.AddHttpClient();
+
+        var transcriptionServiceUrl = Environment.GetEnvironmentVariable("TRANSCRIPTION_SERVICE_URL") ??
+                                      throw new InvalidOperationException(
+                                          "Missing environment variable TRANSCRIPTION_SERVICE_URL");
+
+        services.AddHttpClient<TranscriptionService>(client => { client.BaseAddress = new Uri(transcriptionServiceUrl); });
+
         services.AddScoped<MessageProcessingService>();
     }
 
