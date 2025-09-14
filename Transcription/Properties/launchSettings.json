@@ -8,7 +8,7 @@
             "applicationUrl": "http://localhost:5128",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "DATABASE_SERVICE_URL": "http://localhost:0000"
+                "DATABASE_SERVICE_URL": "http://localhost:5012"
             }
         }
     }
