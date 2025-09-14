@@ -49,7 +49,7 @@ class Program
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "An error occured");
+            Log.Error(ex, "Telegram bot failed to start");
             throw;
         }
         finally
@@ -74,6 +74,7 @@ class Program
 
     private static void ConfigureServices(IServiceCollection services)
     {
+        services.AddSerilog();
         services.AddHttpClient();
 
         var transcriptionServiceUrl = Environment.GetEnvironmentVariable("TRANSCRIPTION_SERVICE_URL") ??

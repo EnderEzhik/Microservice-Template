@@ -36,6 +36,10 @@ public class MessageProcessingService
             await botClient.SendMessage(fromId, "Неверная ссылка");
             return;
         }
+
+        // Убираем все параметры строки, чтобы url видео был всегда одинаковым и уникальным  
+        // Например, метка времени просмотра может всегда быть разной при одинаковой ссылке на видео
+        url = url.Split("&").First();
         
         var transcription = await transcriptionService.ProcessTranscription(url);
         await botClient.SendMessage(fromId, transcription);

@@ -51,7 +51,7 @@ public class TranscriptionService
                 var transcription = JsonSerializer.Deserialize<Shared.Models.Transcription>(content)!;
                 return transcription.Content;
             }
-            
+
             logger.Information("Transcription not found for url: {Url}", url);
             return null;
         }
