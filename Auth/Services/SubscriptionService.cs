@@ -13,9 +13,19 @@ public class SubscriptionService
         databaseService = _databaseService;
     }
 
-    public async Task<bool> CheckSubscription(long userId)
+    public async Task<bool> IsUserSubscribed(long userId)
     {
-        throw new NotImplementedException();
+        logger.Information("Checking is user subscribed for user: {UserId}", userId);
+
+        try
+        {
+            return await databaseService.IsUserSubscribed(userId);
+        }
+        catch
+        {
+            logger.Error("DatabaseService failed during IsUserSubscribed. UserId={UserId}", userId);
+            throw;
+        }
     }
 
     public async Task CreateSubscription(string paymentGuid)

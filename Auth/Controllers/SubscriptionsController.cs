@@ -1,6 +1,6 @@
-using Auth.Services;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using Auth.Services;
 
 namespace Auth.Controllers;
 
@@ -16,8 +16,31 @@ public class SubscriptionsController : ControllerBase
     }
 
     [HttpGet("check/{userId:long}")]
-    public async Task<IActionResult> CheckSubscription(SubscriptionService subscriptionService, long userId)
+    public async Task<ActionResult<SubscriptionStatusResponse>> CheckUserSubscription(SubscriptionService subscriptionService, long userId)
     {
-        throw new NotImplementedException();
+        logger.Information("GET request for checking subscription for user: {UserId}", userId);
+
+        try
+        {
+            var isSubscribed = await subscriptionService.IsUserSubscribed(userId);
+            logger.Information("User subscription status: {IsSubscribed}", isSubscribed);
+
+            return Ok(new SubscriptionStatusResponse
+            {
+                IsSubscribed = isSubscribed,
+                UserId = userId
+            });
+        }
+        catch
+        {
+            logger.Error("DatabaseService error during subscription check. UserId={UserId}", userId);
+            throw;
+        }
     }
+}
+
+public record SubscriptionStatusResponse
+{
+    public long UserId { get; init; }
+    public bool IsSubscribed { get; init; }
 }
