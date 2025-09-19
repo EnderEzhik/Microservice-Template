@@ -13,8 +13,6 @@ public class Program
         try
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            builder.Host.UseSerilog();
             
             ConfigureServices(builder.Services);
 
@@ -60,7 +58,7 @@ public class Program
         }
         catch (Exception ex)
         {
-            Log.Fatal(ex, "Unhandled exception");
+            Log.Fatal(ex, "Transcription service failed to start");
             throw;
         }
         finally
@@ -85,6 +83,7 @@ public class Program
 
     private static void ConfigureServices(IServiceCollection services)
     {
+        services.AddSerilog();
         services.AddHttpClient();
         
         var databaseServiceUrl = Environment.GetEnvironmentVariable("DATABASE_SERVICE_URL") ??
