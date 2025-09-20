@@ -52,7 +52,7 @@ public class TranscriptionService
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var transcription = JsonSerializer.Deserialize<Shared.Models.Transcription>(content)!;
+                var transcription = JsonSerializer.Deserialize<Shared.Entities.Transcription>(content)!;
                 return transcription.Content;
             }
 
@@ -75,7 +75,7 @@ public class TranscriptionService
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var transcription = JsonSerializer.Deserialize<Shared.Models.Transcription>(content)!;
+                var transcription = JsonSerializer.Deserialize<Shared.Entities.Transcription>(content)!;
                 return transcription.Content;
             }
 
