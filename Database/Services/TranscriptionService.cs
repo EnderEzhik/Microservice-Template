@@ -1,7 +1,7 @@
 using Database.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using Shared.Models;
+using Shared.Entities;
 
 namespace Database.Services;
 

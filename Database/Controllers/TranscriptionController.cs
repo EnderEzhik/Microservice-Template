@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using Shared.Models;
+using Shared.Entities;
 using Database.Services;
 
 namespace Database.Controllers;
@@ -25,7 +25,7 @@ public class TranscriptionController : ControllerBase
                 logger.Information("Found transcription with url: {Url}", url);
                 return transcription;
             }
-            
+
             logger.Information("No transcription found with url: {Url}", url);
             return NotFound();
         }
