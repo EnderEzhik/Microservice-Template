@@ -23,6 +23,7 @@ public class Program
             var app = builder.Build();
 
             app.UseSerilogRequestLogging();
+            app.MapControllers();
 
             Log.Information("Database service configured successfully");
             app.Run();

@@ -10,9 +10,9 @@ public class TranscriptionService(MyDbContext _db)
     private readonly Serilog.ILogger logger = Log.ForContext<TranscriptionService>();
     private readonly MyDbContext db = _db;
 
-    public async Task<Transcription?> FindTranscription(string url)
+    public async Task<Transcription?> GetTranscription(string url)
     {
-        logger.Information("Finding transcription");
+        logger.Information("Getting transcription with url: {Url}", url);
 
         var transcription = await db.Transcriptions.AsNoTracking().FirstOrDefaultAsync(t => t.Url == url);
         return transcription;
