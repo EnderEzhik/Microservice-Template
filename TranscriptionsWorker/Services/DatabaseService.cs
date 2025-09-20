@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Serilog;
 
-namespace Transcription.Services;
+namespace TranscriptionsWorker.Services;
 
 public class DatabaseService
 {
@@ -14,7 +14,7 @@ public class DatabaseService
         httpClient = _httpClient;
     }
     
-    public async Task<Shared.Models.Transcription?> GetTranscription(string url)
+    public async Task<Shared.Entities.Transcription?> GetTranscription(string url)
     {
         logger.Information("Finding transcription");
 
@@ -24,7 +24,7 @@ public class DatabaseService
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                var transcription = JsonSerializer.Deserialize<Shared.Models.Transcription>(json)!;
+                var transcription = JsonSerializer.Deserialize<Shared.Entities.Transcription>(json)!;
                 return transcription;
             }
 
@@ -38,7 +38,7 @@ public class DatabaseService
         }
     }
 
-    public async Task SaveTranscription(Shared.Models.Transcription transcription)
+    public async Task SaveTranscription(Shared.Entities.Transcription transcription)
     {
         logger.Information("Saving transcription");
 

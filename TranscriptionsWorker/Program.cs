@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using Transcription.Services;
+using TranscriptionsWorker.Services;
 
-namespace Transcription;
+namespace TranscriptionsWorker;
 
 public class Program
 {

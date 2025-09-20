@@ -1,4 +1,4 @@
-namespace Transcription.Services;
+namespace TranscriptionsWorker.Services;
 
 public class TranscriptionService
 {
@@ -11,12 +11,12 @@ public class TranscriptionService
         databaseService = _databaseService;
     }
 
-    public async Task<Shared.Models.Transcription?> FindTranscription(string url)
+    public async Task<Shared.Entities.Transcription?> FindTranscription(string url)
     {
         return await databaseService.GetTranscription(url);
     }
     
-    public async Task<Shared.Models.Transcription> CreateTranscription(string url)
+    public async Task<Shared.Entities.Transcription> CreateTranscription(string url)
     {
         logger.Information("Creating transcription for url: {Url}", url);
 
@@ -26,7 +26,7 @@ public class TranscriptionService
             // Можно подключить сторонний сервис или свою библиотеку
             var transcriptionText = await CreateTestTranscription();
 
-            var transcription = new Shared.Models.Transcription()
+            var transcription = new Shared.Entities.Transcription()
             {
                 Url = url,
                 Content = transcriptionText
