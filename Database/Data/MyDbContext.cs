@@ -3,21 +3,19 @@ using Serilog;
 
 namespace Database.Data;
 
-public class MyDbContext : DbContext
+public class MyDbContext(DbContextOptions<MyDbContext> options) : DbContext(options)
 {
     private static readonly Serilog.ILogger logger = Log.ForContext<MyDbContext>();
     
     public DbSet<Shared.Models.Transcription> Transcriptions { get; set; }
-    
-    public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        logger.Debug("Configuring database model");
+        logger.Debug("Configuring database models");
+
+        modelBuilder.Entity<Shared.Models.Transcription>().HasKey(t => t.Url);
         
-        modelBuilder.Entity<Shared.Models.Transcription>().HasIndex(t => t.Url);
-        
-        logger.Debug("Database model configured successfully");
+        logger.Debug("Database models configured successfully");
         base.OnModelCreating(modelBuilder);
     }
 }
