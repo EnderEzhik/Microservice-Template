@@ -18,7 +18,7 @@ public class Program
 
             var app = builder.Build();
 
-            app.MapGet("transcription", async (TranscriptionService transcriptionService, [FromQuery] string url) =>
+            app.MapGet("transcriptions", async (TranscriptionService transcriptionService, [FromQuery] string url) =>
             {
                 Log.Information("GET request for get transcription with url: {Url}", url);
 
@@ -34,7 +34,7 @@ public class Program
                 }
             });
 
-            app.MapPost("transcription", async (TranscriptionService transcriptionService, [FromBody] CreateTranscriptionRequest request) =>
+            app.MapPost("transcriptions", async (TranscriptionService transcriptionService, [FromBody] CreateTranscriptionRequest request) =>
             {
                 var url = request.url;
                 Log.Information("POST request for create transcription with url: {Url}", url);
