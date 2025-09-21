@@ -24,7 +24,7 @@ public class TranscriptionService
             var transcription = await FindTranscription(url);
             if (transcription != null)
             {
-                logger.Information("Successfully found transcription for url: {Url}", url);
+                logger.Information("Transcription found for url: {Url}", url);
                 return transcription;
             }
 
@@ -32,7 +32,7 @@ public class TranscriptionService
             
             // Если транскрипция не найдена, создаем новую
             transcription = await CreateTranscription(url);
-            logger.Information("Successfully created transcription for url: {Url}", url);
+            logger.Information("Transcription created for url: {Url}", url);
             return transcription;
         }
         catch (Exception ex)
@@ -48,15 +48,8 @@ public class TranscriptionService
 
         try
         {
-            var response = await httpClient.GetAsync($"transcription?url={url}");
-            if (response.IsSuccessStatusCode)
-            {
-                var content = await response.Content.ReadAsStringAsync();
-                var transcription = JsonSerializer.Deserialize<Shared.Entities.Transcription>(content)!;
-                return transcription.Content;
-            }
-
-            return null;
+            var transcription = await httpClient.GetFromJsonAsync<Shared.Entities.Transcription>($"transcriptions?url={url}");
+            return transcription?.Content;
         }
         catch (Exception ex)
         {
@@ -71,15 +64,16 @@ public class TranscriptionService
 
         try
         {
-            var response = await httpClient.PostAsJsonAsync("transcription", new { url = url });
+            var response = await httpClient.PostAsJsonAsync("transcriptions", new { url = url });
             if (response.IsSuccessStatusCode)
             {
-                var content = await response.Content.ReadAsStringAsync();
-                var transcription = JsonSerializer.Deserialize<Shared.Entities.Transcription>(content)!;
-                return transcription.Content;
+                var transcription = await response.Content.ReadFromJsonAsync<Shared.Entities.Transcription>();
+                return transcription!.Content;
             }
 
-            // logger.Error("Failed to create transcription for URL: {Url}. Status: {StatusCode}", url, response.StatusCode);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            logger.Error("Failed to create transcription for URL: {Url}. Status: {StatusCode}. Response message: {ResponseBody}",
+                url, response, responseBody);
             throw new HttpRequestException($"Failed to create transcription. Status: {response.StatusCode}");
         }
         catch (Exception ex)
