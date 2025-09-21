@@ -20,37 +20,25 @@ public class Program
 
             app.MapGet("transcriptions", async (TranscriptionService transcriptionService, [FromQuery] string url) =>
             {
-                Log.Information("GET request for get transcription with url: {Url}", url);
+                Log.Information("GET request for get transcription for url: {Url}", url);
 
-                try
-                {
-                    var transcription = await transcriptionService.FindTranscription(url);
-                    return transcription != null ? Results.Ok(transcription) : Results.NotFound();
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Error getting transcription for url: {Url}", url);
-                    return Results.Problem("Error getting transcription");
-                }
+                var transcription = await transcriptionService.FindTranscription(url);
+                return transcription != null ? Results.Ok(transcription) : Results.NotFound();
             });
 
-            app.MapPost("transcriptions", async (TranscriptionService transcriptionService, [FromBody] CreateTranscriptionRequest request) =>
+            app.MapPost("transcriptions", async (TranscriptionService transcriptionService, CreateTranscriptionRequest request) =>
             {
-                var url = request.url;
-                Log.Information("POST request for create transcription with url: {Url}", url);
+                var url = request.Url;
+                Log.Information("POST request for create transcription for url: {Url}", url);
 
                 try
                 {
                     var transcription = await transcriptionService.CreateTranscription(url);
-                    // В ответе будет сущность без установленного id
-                    // Возможно стоит возвращать сгенерированный id сущности после сохранения в бд
-                    // Или заменить сущность для возврата на DTO без id, так как id не будет нигде использоваться
                     return Results.Ok(transcription);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Log.Error(ex, "Error creating transcription for url: {Url}", url);
-                    return Results.Problem("Error creating transcription");
+                    return Results.Problem("Error creating transcription for url: {Url}");
                 }
             });
 
@@ -99,4 +87,4 @@ public class Program
     }
 }
 
-record CreateTranscriptionRequest(string url);
+record CreateTranscriptionRequest(string Url);

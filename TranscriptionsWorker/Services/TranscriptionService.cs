@@ -1,19 +1,30 @@
 namespace TranscriptionsWorker.Services;
 
-public class TranscriptionService
+public class TranscriptionService(DatabaseService databaseService)
 {
-    private readonly Serilog.ILogger logger;
-    private readonly DatabaseService databaseService;
-
-    public TranscriptionService(DatabaseService _databaseService)
-    {
-        logger = Serilog.Log.ForContext<TranscriptionService>();
-        databaseService = _databaseService;
-    }
+    private readonly Serilog.ILogger logger = Serilog.Log.ForContext<TranscriptionService>();
 
     public async Task<Shared.Entities.Transcription?> FindTranscription(string url)
     {
-        return await databaseService.GetTranscription(url);
+        logger.Information("Finding transcription for url: {Url}", url);
+
+        try
+        {
+            var transcription = await databaseService.GetTranscription(url);
+            if (transcription != null)
+            {
+                logger.Information("Transcription found for url: {Url}", url);
+                return transcription;
+            }
+
+            logger.Information("Transcription not found for url: {Url}", url);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Error finding transcription for url: {Url}", url);
+            return null;
+        }
     }
     
     public async Task<Shared.Entities.Transcription> CreateTranscription(string url)
@@ -22,8 +33,6 @@ public class TranscriptionService
 
         try
         {
-            // Код создающий транскрипцию для указанного url
-            // Можно подключить сторонний сервис или свою библиотеку
             var transcriptionText = await CreateTestTranscription();
 
             var transcription = new Shared.Entities.Transcription()
@@ -31,9 +40,18 @@ public class TranscriptionService
                 Url = url,
                 Content = transcriptionText
             };
-            
+
+            logger.Information("Transcription created for url: {Url}", url);
+
             await databaseService.SaveTranscription(transcription);
+            logger.Information("Transcription saved for url: {Url}", url);
             return transcription;
+        }
+        // TODO: добавить собственный класс исключения для использования при сохранении транскрипции в базу данных
+        catch (HttpRequestException ex)
+        {
+            logger.Error(ex, "Failed to save transcription for URL: {Url}.", url);
+            throw;
         }
         catch (Exception ex)
         {
