@@ -48,8 +48,14 @@ public class TranscriptionService
 
         try
         {
-            var transcription = await httpClient.GetFromJsonAsync<Shared.Entities.Transcription>($"transcriptions?url={url}");
-            return transcription?.Content;
+            var response = await httpClient.GetAsync($"transcriptions?url={url}");
+            if (response.IsSuccessStatusCode)
+            {
+                var transcription = await response.Content.ReadFromJsonAsync<Shared.Entities.Transcription>();
+                return transcription!.Content;
+            }
+            return null;
+            
         }
         catch (Exception ex)
         {

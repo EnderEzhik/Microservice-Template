@@ -52,12 +52,13 @@ public class Program
                 .Enrich.FromLogContext()
                 .Filter.ByExcluding(Matching.FromSource("System"))
                 .Filter.ByExcluding(Matching.FromSource("Microsoft"))
-                .Filter.ByExcluding(Matching.FromSource("Serilog.AspNetCore"))
                 .WriteTo.File(
                     path: "logs/database-service.log",
                     rollingInterval: RollingInterval.Day,
                     shared: true,
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}"))
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
+                .WriteTo.Console(
+                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"))
             .CreateLogger();
     }
 

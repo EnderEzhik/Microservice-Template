@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using Serilog.Filters;
 using TranscriptionsWorker.Services;
 
 namespace TranscriptionsWorker;
@@ -17,6 +18,8 @@ public class Program
             ConfigureServices(builder.Services);
 
             var app = builder.Build();
+
+            app.UseSerilogRequestLogging();
 
             app.MapGet("transcriptions", async (TranscriptionService transcriptionService, [FromQuery] string url) =>
             {
@@ -59,13 +62,23 @@ public class Program
     {
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .WriteTo.Console(
-                outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .Enrich.FromLogContext()
             .WriteTo.File(
-                path: "logs/transcription-service.log",
+                path: "logs/all/transcription-service-all.log",
                 rollingInterval: RollingInterval.Day,
-                retainedFileCountLimit: 7,
-                outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+                shared: true)
+            .WriteTo.Logger(lc => lc
+                .Enrich.FromLogContext()
+                .Filter.ByExcluding(Matching.FromSource("System"))
+                .Filter.ByExcluding(Matching.FromSource("Microsoft"))
+                // .Filter.ByExcluding(Matching.FromSource("Serilog.AspNetCore"))
+                .WriteTo.File(
+                    path: "logs/transcription-service.log",
+                    rollingInterval: RollingInterval.Day,
+                    shared: true,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
+                .WriteTo.Console(
+                    outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}"))
             .CreateLogger();
     }
 
