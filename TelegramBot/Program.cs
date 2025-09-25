@@ -13,7 +13,6 @@ namespace TelegramBot;
 class Program
 {
     private static TelegramBotClient botClient;
-    private static CancellationTokenSource cts;
 
     private static IServiceProvider serviceProvider;
 
@@ -35,8 +34,7 @@ class Program
             var botToken = Environment.GetEnvironmentVariable("BOT_TOKEN") ??
                            throw new InvalidOperationException("Missing environment variable BOT_TOKEN");
 
-            cts = new CancellationTokenSource();
-            botClient = new TelegramBotClient(botToken, cancellationToken: cts.Token);
+            botClient = new TelegramBotClient(botToken);
             await botClient.DropPendingUpdates();
 
             botClient.OnMessage += OnMessage;
@@ -46,7 +44,6 @@ class Program
             Log.Information("Telegram Bot is ready. My username: {Username}", me.Username);
 
             await Task.Delay(Timeout.Infinite);
-            await cts.CancelAsync();
         }
         catch (Exception ex)
         {
@@ -86,8 +83,7 @@ class Program
         services.AddHttpClient();
 
         var transcriptionServiceUrl = Environment.GetEnvironmentVariable("TRANSCRIPTION_SERVICE_URL") ??
-                                      throw new InvalidOperationException(
-                                          "Missing environment variable TRANSCRIPTION_SERVICE_URL");
+                                      throw new InvalidOperationException("Missing environment variable TRANSCRIPTION_SERVICE_URL");
 
         services.AddHttpClient<TranscriptionService>(client => { client.BaseAddress = new Uri(transcriptionServiceUrl); });
 

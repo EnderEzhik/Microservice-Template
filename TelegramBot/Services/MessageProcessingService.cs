@@ -5,16 +5,9 @@ using Telegram.Bot.Types.Enums;
 
 namespace TelegramBot.Services;
 
-public class MessageProcessingService
+public class MessageProcessingService(TranscriptionService transcriptionService)
 {
-    private readonly ILogger logger;
-    private readonly TranscriptionService transcriptionService;
-
-    public MessageProcessingService(TranscriptionService _transcriptionService)
-    {
-        logger = Log.ForContext<MessageProcessingService>();
-        transcriptionService = _transcriptionService;
-    }
+    private readonly ILogger logger = Log.ForContext<MessageProcessingService>();
 
     public async Task ProcessAsync(ITelegramBotClient botClient, Message message)
     {
@@ -32,7 +25,7 @@ public class MessageProcessingService
         var url = message.Text!;
         if (!url.StartsWith("https://www.youtube.com/"))
         {
-            logger.Information("Invalid url");
+            logger.Information("Invalid url: {Url}", url);
             await botClient.SendMessage(fromId, "Неверная ссылка");
             return;
         }

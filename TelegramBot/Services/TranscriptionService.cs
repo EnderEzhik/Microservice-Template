@@ -71,10 +71,9 @@ public class TranscriptionService
                 return transcription!.Content;
             }
 
+            logger.Error("Failed to create transcription for URL: {Url}. Status: {StatusCode}", url, response.StatusCode);
             var responseBody = await response.Content.ReadAsStringAsync();
-            logger.Error("Failed to create transcription for URL: {Url}. Status: {StatusCode}. Response message: {ResponseBody}",
-                url, response, responseBody);
-            throw new HttpRequestException($"Failed to create transcription. Status: {response.StatusCode}");
+            throw new HttpRequestException(responseBody);
         }
         catch (Exception ex)
         {

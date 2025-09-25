@@ -13,7 +13,6 @@ public class TranscriptionService(MyDbContext _db)
     public async Task<Transcription?> GetTranscription(string url)
     {
         logger.Information("Getting transcription with url: {Url}", url);
-
         var transcription = await db.Transcriptions.AsNoTracking().FirstOrDefaultAsync(t => t.Url == url);
         return transcription;
     }

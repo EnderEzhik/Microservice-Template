@@ -50,12 +50,12 @@ public class TranscriptionService(DatabaseService databaseService)
         // TODO: добавить собственный класс исключения для использования при сохранении транскрипции в базу данных
         catch (HttpRequestException ex)
         {
-            logger.Error(ex, "Failed to save transcription for URL: {Url}.", url);
+            logger.Error(ex, "Failed saving transcription for url: {Url}", url);
             throw;
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "Error creating transcription for url: {Url}", url);
+            logger.Error(ex, "Failed creating transcription for url: {Url}", url);
             throw;
         }
     }
