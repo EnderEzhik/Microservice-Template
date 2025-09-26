@@ -31,19 +31,7 @@ class Program
             var host = builder.Build();
             serviceProvider = host.Services;
 
-            var botToken = Environment.GetEnvironmentVariable("BOT_TOKEN") ??
-                           throw new InvalidOperationException("Missing environment variable BOT_TOKEN");
-
-            botClient = new TelegramBotClient(botToken);
-            await botClient.DropPendingUpdates();
-
-            botClient.OnMessage += OnMessage;
-            botClient.OnError += OnError;
-
-            var me = await botClient.GetMe();
-            Log.Information("Telegram Bot is ready. My username: {Username}", me.Username);
-
-            await Task.Delay(Timeout.Infinite);
+            await RunBot();
         }
         catch (Exception ex)
         {
@@ -90,6 +78,23 @@ class Program
         services.AddHttpClient<TranscriptionService>(client => { client.BaseAddress = new Uri(transcriptionServiceUrl); });
 
         services.AddScoped<MessageProcessingService>();
+    }
+
+    private static async Task RunBot()
+    {
+        var botToken = Environment.GetEnvironmentVariable("BOT_TOKEN") ??
+                       throw new InvalidOperationException("Missing environment variable BOT_TOKEN");
+
+        botClient = new TelegramBotClient(botToken);
+        await botClient.DropPendingUpdates();
+
+        botClient.OnMessage += OnMessage;
+        botClient.OnError += OnError;
+
+        var me = await botClient.GetMe();
+        Log.Information("Telegram Bot is ready. My username: {Username}", me.Username);
+
+        await Task.Delay(Timeout.Infinite);
     }
 
     private static Task OnError(Exception exception, HandleErrorSource source)

@@ -15,7 +15,7 @@ public class TranscriptionService
         httpClient = _httpClient;
     }
 
-    public async Task<string> ProcessTranscription(string url)
+    public async Task<string?> ProcessTranscription(string url)
     {
         logger.Information("Processing transcription for url: {Url}", url);
 
@@ -38,7 +38,7 @@ public class TranscriptionService
         catch (Exception ex)
         {
             logger.Error(ex, "Error processing transcription for url: {Url}", url);
-            throw;
+            return null;
         }
     }
 
@@ -77,7 +77,6 @@ public class TranscriptionService
                 return transcription!.Content;
             }
 
-            logger.Error("Failed to create transcription for URL: {Url}. Status: {StatusCode}", url, response.StatusCode);
             var responseBody = await response.Content.ReadAsStringAsync();
             throw new HttpRequestException(responseBody);
         }

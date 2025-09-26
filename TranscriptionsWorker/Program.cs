@@ -13,6 +13,7 @@ public class Program
 
         try
         {
+            Log.Information("TranscriptionsWorker starting...");
             var builder = WebApplication.CreateBuilder(args);
             
             ConfigureServices(builder.Services);
@@ -45,6 +46,7 @@ public class Program
                 }
             });
 
+            Log.Information("TranscriptionsWorker started");
             app.Run();
         }
         catch (Exception ex)
@@ -71,7 +73,6 @@ public class Program
                 .Enrich.FromLogContext()
                 .Filter.ByExcluding(Matching.FromSource("System"))
                 .Filter.ByExcluding(Matching.FromSource("Microsoft"))
-                // .Filter.ByExcluding(Matching.FromSource("Serilog.AspNetCore"))
                 .WriteTo.File(
                     path: "logs/transcription-service.log",
                     rollingInterval: RollingInterval.Day,
@@ -88,8 +89,7 @@ public class Program
         services.AddHttpClient();
         
         var databaseServiceUrl = Environment.GetEnvironmentVariable("DATABASE_SERVICE_URL") ??
-                                      throw new InvalidOperationException(
-                                          "Missing environment variable DATABASE_SERVICE_URL");
+                                      throw new InvalidOperationException("Missing environment variable DATABASE_SERVICE_URL");
 
         services.AddHttpClient<DatabaseService>(client =>
         {

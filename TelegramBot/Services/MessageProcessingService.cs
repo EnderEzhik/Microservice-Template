@@ -12,15 +12,16 @@ public class MessageProcessingService(TranscriptionService transcriptionService)
     public async Task ProcessAsync(ITelegramBotClient botClient, Message message)
     {
         var fromId = message.From!.Id;
+        
+        logger.Information("Message receiving from user {UserId} ({Username})",
+            fromId, message.From!.Username);
+        
         if (message.Type != MessageType.Text)
         {
             logger.Information("Non-text message received from user {UserId}", fromId);
             await botClient.SendMessage(fromId, "Я тебя не понимаю");
             return;
         }
-        
-        logger.Information("Message receiving from user {UserId} ({Username})",
-            fromId, message.From!.Username);
 
         var url = message.Text!;
         if (!url.StartsWith("https://www.youtube.com/"))
@@ -30,11 +31,15 @@ public class MessageProcessingService(TranscriptionService transcriptionService)
             return;
         }
 
-        // Убираем все параметры строки, чтобы url видео был всегда одинаковым и уникальным  
-        // Например, метка времени просмотра может всегда быть разной при одинаковой ссылке на видео
+        // Убираем все параметры строки, чтобы оставить только уникальный url видео
         url = url.Split("&").First();
         
         var transcription = await transcriptionService.ProcessTranscription(url);
+        if (transcription == null)
+        {
+            await botClient.SendMessage(fromId, "Что-то пошло не так");
+            return;
+        }
         await botClient.SendMessage(fromId, transcription);
     }
 }
