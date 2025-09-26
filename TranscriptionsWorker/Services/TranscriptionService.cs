@@ -1,3 +1,5 @@
+using TranscriptionsWorker.CustomErrors;
+
 namespace TranscriptionsWorker.Services;
 
 public class TranscriptionService(DatabaseService databaseService)
@@ -23,7 +25,7 @@ public class TranscriptionService(DatabaseService databaseService)
         catch (Exception ex)
         {
             logger.Error(ex, "Error finding transcription for url: {Url}", url);
-            return null;
+            throw;
         }
     }
     
@@ -47,8 +49,7 @@ public class TranscriptionService(DatabaseService databaseService)
             logger.Information("Transcription saved for url: {Url}", url);
             return transcription;
         }
-        // TODO: добавить собственный класс исключения для использования при сохранении транскрипции в базу данных
-        catch (HttpRequestException ex)
+        catch (TranscriptionSaveException ex)
         {
             logger.Error(ex, "Failed saving transcription for url: {Url}", url);
             throw;

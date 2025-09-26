@@ -84,8 +84,16 @@ public class Program
         {
             Log.Information("GET request for get transcription for url: {Url}", url);
 
-            var transcription = await transcriptionService.FindTranscription(url);
-            return transcription != null ? Results.Ok(transcription) : Results.NotFound();
+            try
+            {
+                var transcription = await transcriptionService.FindTranscription(url);
+                return transcription != null ? Results.Ok(transcription) : Results.NotFound();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error finding transcription for url: {Url}", url);
+                return Results.StatusCode(500);
+            }
         });
 
         app.MapPost("transcriptions", async (TranscriptionService transcriptionService, TranscriptionCreateRequest request) =>
@@ -100,7 +108,7 @@ public class Program
             }
             catch
             {
-                return Results.Problem("Error creating transcription for url: {Url}");
+                return Results.StatusCode(500);
             }
         });
     }

@@ -1,4 +1,5 @@
 using Serilog;
+using TranscriptionsWorker.CustomErrors;
 
 namespace TranscriptionsWorker.Services;
 
@@ -24,7 +25,7 @@ public class DatabaseService(HttpClient httpClient)
         var response = await httpClient.PostAsJsonAsync($"transcriptions", transcription);
         if (!response.IsSuccessStatusCode)
         {
-            throw new HttpRequestException($"Failed to save transcription. Status: {response.StatusCode}");
+            throw new TranscriptionSaveException($"Failed to save transcription. Status: {response.StatusCode}");
         }
     }
 }
