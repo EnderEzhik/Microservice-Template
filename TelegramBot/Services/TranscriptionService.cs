@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using Serilog;
+using Shared.DTOs;
 
 namespace TelegramBot.Services;
 
@@ -70,7 +70,12 @@ public class TranscriptionService
 
         try
         {
-            var response = await httpClient.PostAsJsonAsync("transcriptions", new { url = url });
+            var createTranscription = new TranscriptionCreateRequest()
+            {
+                Url = url
+            };
+            
+            var response = await httpClient.PostAsJsonAsync("transcriptions", createTranscription);
             if (response.IsSuccessStatusCode)
             {
                 var transcription = await response.Content.ReadFromJsonAsync<Shared.Entities.Transcription>();

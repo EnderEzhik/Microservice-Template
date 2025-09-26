@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Filters;
+using Shared.DTOs;
 using TranscriptionsWorker.Services;
 
 namespace TranscriptionsWorker;
@@ -22,29 +23,7 @@ public class Program
 
             app.UseSerilogRequestLogging();
 
-            app.MapGet("transcriptions", async (TranscriptionService transcriptionService, [FromQuery] string url) =>
-            {
-                Log.Information("GET request for get transcription for url: {Url}", url);
-
-                var transcription = await transcriptionService.FindTranscription(url);
-                return transcription != null ? Results.Ok(transcription) : Results.NotFound();
-            });
-
-            app.MapPost("transcriptions", async (TranscriptionService transcriptionService, CreateTranscriptionRequest request) =>
-            {
-                var url = request.Url;
-                Log.Information("POST request for create transcription for url: {Url}", url);
-
-                try
-                {
-                    var transcription = await transcriptionService.CreateTranscription(url);
-                    return Results.Ok(transcription);
-                }
-                catch
-                {
-                    return Results.Problem("Error creating transcription for url: {Url}");
-                }
-            });
+            ConfigureTranscriptionsEndpoints(app);
 
             Log.Information("TranscriptionsWorker started");
             app.Run();
@@ -98,6 +77,31 @@ public class Program
         
         services.AddScoped<TranscriptionService>();
     }
-}
 
-record CreateTranscriptionRequest(string Url);
+    private static void ConfigureTranscriptionsEndpoints(WebApplication app)
+    {
+        app.MapGet("transcriptions", async (TranscriptionService transcriptionService, [FromQuery] string url) =>
+        {
+            Log.Information("GET request for get transcription for url: {Url}", url);
+
+            var transcription = await transcriptionService.FindTranscription(url);
+            return transcription != null ? Results.Ok(transcription) : Results.NotFound();
+        });
+
+        app.MapPost("transcriptions", async (TranscriptionService transcriptionService, TranscriptionCreateRequest request) =>
+        {
+            var url = request.Url;
+            Log.Information("POST request for create transcription for url: {Url}", url);
+
+            try
+            {
+                var transcription = await transcriptionService.CreateTranscription(url);
+                return Results.Ok(transcription);
+            }
+            catch
+            {
+                return Results.Problem("Error creating transcription for url: {Url}");
+            }
+        });
+    }
+}
